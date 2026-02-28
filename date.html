@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Secret Date Plan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .card {
+      background: #ffffffee;
+      border-radius: 16px;
+      max-width: 520px;
+      width: 100%;
+      padding: 24px 24px 28px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(6px);
+      animation: fadeIn 0.9s ease-out;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .tagline {
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #ff7a7a;
+      margin-bottom: 8px;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 4px;
+      color: #333;
+    }
+    .subtitle {
+      font-size: 0.95rem;
+      color: #666;
+      margin-bottom: 20px;
+    }
+    .info {
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #fff7f5;
+      border: 1px solid #ffd4c8;
+    }
+    .info p + p {
+      margin-top: 4px;
+    }
+    .info strong {
+      color: #e05a5a;
+    }
+
+    .timeline {
+      list-style: none;
+      margin-bottom: 16px;
+    }
+    .timeline-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px dashed #eee;
+    }
+    .timeline-item:last-child {
+      border-bottom: none;
+    }
+    .time {
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: #e05a5a;
+      min-width: 60px;
+    }
+    .content-title {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .content-desc {
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .message {
+      margin-top: 14px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #444;
+    }
+
+    .footer {
+      margin-top: 18px;
+      font-size: 0.75rem;
+      text-align: right;
+      color: #888;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 20px 18px 22px;
+      }
+      h1 {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="tagline">Secret Date Plan</div>
+    <h1>今日のデートの予定</h1>
+    <p class="subtitle">QRコードを開いてくれてありがとう。このページは、あなただけへの秘密のプランです。</p>
+
+    <section class="info">
+      <p><strong>日付：</strong> 2026年3月14日（土）</p>
+      <p><strong>待ち合わせ：</strong> 13:00　＠ 渋谷駅 ハチ公前</p>
+    </section>
+
+    <ul class="timeline">
+      <li class="timeline-item">
+        <div class="time">13:00</div>
+        <div>
+          <div class="content-title">待ち合わせ ＆ カフェで一息</div>
+          <p class="content-desc">まずは近くの落ち着いたカフェで、ゆっくりおしゃべりしながら今日の予定をスタート。</p>
+        </div>
+      </li>
+      <li class="timeline-item">
+        <div class="time">14:30</div>
+        <div>
+          <div class="content-title">街を散策しながらショッピング</div>
+          <p class="content-desc">気になるお店があったら、ふらっと立ち寄りながら一緒にぶらぶら。</p>
+        </div>
+      </li>
+      <li class="timeline-item">
+        <div class="time">17:30</div>
+        <div>
+          <div class="content-title">ちょっと特別なディナー</div>
+          <p class="content-desc">事前に予約してあるお店へ。あなたが喜びそうな雰囲気のお店を選びました。</p>
+        </div>
+      </li>
+      <li class="timeline-item">
+        <div class="time">20:00</div>
+        <div>
+          <div class="content-title">夜景を見ながらゆっくり</div>
+          <p class="content-desc">最後は、きれいな夜景を見ながら今日の思い出をゆっくり話せたらいいなと思ってます。</p>
+        </div>
+      </li>
+    </ul>
+
+    <section class="message">
+      <p>
+        今日一日、あなたに楽しんでもらえたらそれが一番うれしいです。<br>
+        もし「ここ行きたい！」って場所があったら、当日でも遠慮なく言ってね。
+      </p>
+    </section>
+
+    <div class="footer">
+      from ○○より
+    </div>
+  </main>
+</body>
+</html>
