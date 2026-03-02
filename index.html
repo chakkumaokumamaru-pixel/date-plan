@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>Secret Date Plan</title>
+  <title>Secret Birthday Date Plan</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     * {
@@ -10,35 +10,81 @@
       margin: 0;
       padding: 0;
     }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+      background: radial-gradient(circle at top, #ffe0f0 0%, #ffc3a0 45%, #ffafbd 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 16px;
+      position: relative;
+      /* 縦スクロールできるように修正 */
+      overflow-x: hidden;
+      overflow-y: auto;
     }
+
+    /* 紙吹雪用キャンバス */
+    #confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* メインカード */
     .card {
       background: #ffffffee;
-      border-radius: 16px;
+      border-radius: 18px;
       max-width: 520px;
       width: 100%;
       padding: 24px 24px 28px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
       backdrop-filter: blur(6px);
-      animation: fadeIn 0.9s ease-out;
+      animation: cardIn 0.9s ease-out;
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
     }
-    @keyframes fadeIn {
+
+    /* 背景にうっすら「21」が浮いてる */
+    .card::before {
+      content: "21";
+      position: absolute;
+      right: -10px;
+      top: -20px;
+      font-size: 130px;
+      font-weight: 800;
+      color: rgba(255, 150, 180, 0.16);
+      pointer-events: none;
+      z-index: -1;
+      animation: float21 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes float21 {
+      from {
+        transform: translateY(0) rotate(-5deg);
+      }
+      to {
+        transform: translateY(8px) rotate(3deg);
+      }
+    }
+
+    @keyframes cardIn {
       from {
         opacity: 0;
-        transform: translateY(12px);
+        transform: translateY(20px) scale(0.97);
       }
       to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
       }
     }
+
     .tagline {
       font-size: 0.85rem;
       letter-spacing: 0.15em;
@@ -46,16 +92,19 @@
       color: #ff7a7a;
       margin-bottom: 8px;
     }
+
     h1 {
       font-size: 1.6rem;
       margin-bottom: 4px;
       color: #333;
     }
+
     .subtitle {
       font-size: 0.95rem;
       color: #666;
       margin-bottom: 20px;
     }
+
     .info {
       font-size: 0.95rem;
       margin-bottom: 20px;
@@ -64,9 +113,11 @@
       background: #fff7f5;
       border: 1px solid #ffd4c8;
     }
+
     .info p + p {
       margin-top: 4px;
     }
+
     .info strong {
       color: #e05a5a;
     }
@@ -75,6 +126,7 @@
       list-style: none;
       margin-bottom: 16px;
     }
+
     .timeline-item {
       display: flex;
       align-items: flex-start;
@@ -82,19 +134,23 @@
       padding: 10px 0;
       border-bottom: 1px dashed #eee;
     }
+
     .timeline-item:last-child {
       border-bottom: none;
     }
+
     .time {
       font-weight: bold;
       font-size: 0.9rem;
       color: #e05a5a;
       min-width: 60px;
     }
+
     .content-title {
       font-weight: 600;
       margin-bottom: 2px;
     }
+
     .content-desc {
       font-size: 0.9rem;
       color: #555;
@@ -122,9 +178,141 @@
         font-size: 1.4rem;
       }
     }
+
+    /* イントロ全画面演出 */
+    #intro {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top, #ff9a9e 0%, #fecfef 40%, #f6d365 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      text-align: center;
+      z-index: 10;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.6s ease-out;
+    }
+
+    #intro.hold-show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #intro h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      text-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+      animation: pop 1s ease-in-out infinite alternate;
+      padding: 0 16px;
+    }
+
+    #intro p {
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
+    #intro .sub {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      opacity: 0.85;
+    }
+
+    @keyframes pop {
+      from {
+        transform: translateY(0) scale(1);
+      }
+      to {
+        transform: translateY(-4px) scale(1.06);
+      }
+    }
+
+    /* ローディング画面 */
+    #loading {
+      position: fixed;
+      inset: 0;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      transition: opacity 0.5s ease;
+    }
+
+    #loading p {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: #555;
+      text-align: center;
+      padding: 0 16px;
+      min-height: 2.4em;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 4px solid #ffd4e0;
+      border-top-color: #ff7a7a;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* 🔊 BGMオン／オフボタン */
+    #musicToggle {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+      background: #ff7a7a;
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+      z-index: 30;
+    }
+
+    #musicToggle:active {
+      transform: scale(0.95);
+    }
   </style>
 </head>
 <body>
+  <!-- 🔊 BGMオン／オフ -->
+  <button id="musicToggle" aria-label="BGM切り替え">🔊</button>
+
+  <!-- 紙吹雪キャンバス -->
+  <canvas id="confetti"></canvas>
+
+  <!-- ローディング画面 -->
+  <div id="loading">
+    <div class="spinner"></div>
+    <p id="loading-text">サプライズを準備中…</p>
+  </div>
+
+  <!-- イントロ画面 -->
+  <div id="intro">
+    <h1>🎉 HAPPY 21th BIRTHDAY HINANO 🎂</h1>
+    <p>タップして<br>ひなのだけのサプライズページをひらく</p>
+    <p class="sub">ドキドキの準備はいい？</p>
+  </div>
+
+  <!-- メイン内容 -->
   <main class="card">
     <div class="tagline">Secret Date Plan</div>
     <h1>3月4日のデートの予定</h1>
@@ -164,21 +352,21 @@
           <p class="content-desc">気になるお店があったら、ふらっと立ち寄りながら一緒にぶらぶら。誕生日プレゼントもついでに探そう。</p>
         </div>
       </li>
- <li class="timeline-item">
+      <li class="timeline-item">
         <div class="time">15:30～</div>
         <div>
           <div class="content-title">カフェ</div>
           <p class="content-desc">少し休憩。この時間でセミナー終わらせてね。</p>
         </div>
       </li>
- <li class="timeline-item">
+      <li class="timeline-item">
         <div class="time">17:30～</div>
         <div>
           <div class="content-title">ドライヘッドスパ＆マッサージ</div>
           <p class="content-desc">@ヘッドミント京都祇園店　お互い就活お疲れ様！ここで頭を空っぽにして、日頃の疲れを二人でリセットしよう。</p>
         </div>
       </li>
- <li class="timeline-item">
+      <li class="timeline-item">
         <div class="time">19:00～</div>
         <div>
           <div class="content-title">サシ飲み＆自由</div>
@@ -188,13 +376,306 @@
     </ul>
 
     <section class="message">
-      <p>ひなの２１歳のお誕生日おめでとう！！！これからも仲良くしようね。明日は一緒にデート楽しもうね！もし「ここ行きたい！」って場所があったら、当日でも遠慮なく言ってね。<br>
-      </p>
+      <p>ひなの２１歳のお誕生日おめでとう！！！これからも仲良くしようね。明日は一緒にデート楽しもうね！もし「ここ行きたい！」って場所があったら、当日でも遠慮なく言ってね。<br></p>
     </section>
 
     <div class="footer">
       from たくやより
     </div>
   </main>
+
+  <script>
+    // ========= ハッピーバースデーBGM（ちょいリッチ ver, 明るめ＆ループ＋オンオフ） =========
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+    let bgmStarted = false;
+    let masterGain = null;   // 全体の音量をまとめて管理
+    let bgmMuted = false;
+
+    // 簡易エコー用
+    let echoDelayNode = null;
+    let echoFeedbackGain = null;
+
+    // 音階
+    const NOTE_FREQ = {
+      C4: 261.63,
+      D4: 293.66,
+      E4: 329.63,
+      F4: 349.23,
+      G4: 392.00,
+      A4: 440.00,
+      B4: 493.88,
+      Bb4: 466.16,
+      C5: 523.25,
+      D5: 587.33,
+      E5: 659.25,
+      F5: 698.46,
+      G5: 783.99
+    };
+
+    // ハッピーバースデー（1周分）※元のキー
+    const HAPPY_BIRTHDAY_ONCE = [
+      ["G4", 1], ["G4", 1], ["A4", 2], ["G4", 2], ["C5", 2], ["B4", 4],
+      ["G4", 1], ["G4", 1], ["A4", 2], ["G4", 2], ["D5", 2], ["C5", 4],
+      ["G4", 1], ["G4", 1], ["G5", 2], ["E5", 2], ["C5", 2], ["B4", 2], ["A4", 4],
+      ["F5", 1], ["F5", 1], ["E5", 2], ["C5", 2], ["D5", 2], ["C5", 4]
+    ];
+
+    // 「長め」にするため2周分つなげる
+    const HAPPY_BIRTHDAY_MELODY = [
+      ...HAPPY_BIRTHDAY_ONCE,
+      ...HAPPY_BIRTHDAY_ONCE
+    ];
+
+    function ensureAudioContext() {
+      if (!AudioContextClass) return;
+      if (!audioCtx || audioCtx.state === "closed") {
+        audioCtx = new AudioContextClass();
+        masterGain = audioCtx.createGain();
+        masterGain.gain.value = 0.25;
+        masterGain.connect(audioCtx.destination);
+        echoDelayNode = null;
+        echoFeedbackGain = null;
+      } else if (!masterGain) {
+        masterGain = audioCtx.createGain();
+        masterGain.gain.value = 0.25;
+        masterGain.connect(audioCtx.destination);
+      }
+    }
+
+    function setupEchoIfNeeded() {
+      if (!audioCtx) return;
+      if (!masterGain) {
+        masterGain = audioCtx.createGain();
+        masterGain.gain.value = 0.25;
+        masterGain.connect(audioCtx.destination);
+      }
+      if (echoDelayNode && echoFeedbackGain) return;
+
+      // かるいディレイ（エコーっぽいもの）
+      echoDelayNode = audioCtx.createDelay(0.5);     // 0.5秒くらい遅れて返ってくる
+      echoFeedbackGain = audioCtx.createGain();
+      echoFeedbackGain.gain.value = 0.25;           // エコー音を小さめに
+
+      // フィードバック・ループ
+      echoDelayNode.connect(echoFeedbackGain);
+      echoFeedbackGain.connect(echoDelayNode);
+
+      // 最終的に masterGain へ
+      echoDelayNode.connect(masterGain);
+    }
+
+    function playHappyBirthdayLoop() {
+      if (!AudioContextClass) return;
+
+      ensureAudioContext();
+      setupEchoIfNeeded();
+
+      const beat = 0.32; // 1拍あたりの秒数（ちょい軽めのテンポ）
+      let currentTime = audioCtx.currentTime;
+      let totalBeats = 0;
+
+      HAPPY_BIRTHDAY_MELODY.forEach(([note, length]) => {
+        const baseFreq = NOTE_FREQ[note];
+        const duration = length * beat;
+
+        // 明るい音程にするために1オクターブ上に
+        const freq = baseFreq ? baseFreq * 2 : null;
+
+        if (freq) {
+          // メインの音（明るめ）
+          const mainOsc = audioCtx.createOscillator();
+          mainOsc.type = "triangle";        // 三角波：まろやかだけど明るい
+
+          // ちょっと下でハモる音（厚み用）
+          const harmonyOsc = audioCtx.createOscillator();
+          harmonyOsc.type = "sine";
+          harmonyOsc.frequency.value = freq * 0.75; // 4度下くらいでハモらせる
+
+          // それぞれ周波数設定
+          mainOsc.frequency.value = freq;
+
+          const gain = audioCtx.createGain();
+
+          // main と harmony をまとめて gain に入れる
+          mainOsc.connect(gain);
+          harmonyOsc.connect(gain);
+
+          // gain → masterGain & エコー
+          gain.connect(masterGain);
+          if (echoDelayNode) {
+            gain.connect(echoDelayNode);
+          }
+
+          const startTime = currentTime;
+          const endTime = currentTime + duration;
+
+          // 音量フェードイン・アウト（全体的に少し小さめ）
+          gain.gain.setValueAtTime(0, startTime);
+          gain.gain.linearRampToValueAtTime(0.18, startTime + 0.03);
+          gain.gain.setValueAtTime(0.18, endTime - 0.05);
+          gain.gain.linearRampToValueAtTime(0, endTime);
+
+          mainOsc.start(startTime);
+          harmonyOsc.start(startTime);
+
+          mainOsc.stop(endTime);
+          harmonyOsc.stop(endTime);
+        }
+
+        currentTime += duration;
+        totalBeats += length;
+      });
+
+      const totalDuration = totalBeats * beat;
+
+      // 1周鳴らし終わったらまたスタート（ループ）
+      setTimeout(() => {
+        if (audioCtx && audioCtx.state !== "closed") {
+          playHappyBirthdayLoop();
+        }
+      }, totalDuration * 1000);
+    }
+
+    // ========= 紙吹雪 =========
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    const pieces = [];
+    const NUM_CONFETTI = 180;
+
+    for (let i = 0; i < NUM_CONFETTI; i++) {
+      pieces.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        size: Math.random() * 6 + 4,
+        speed: Math.random() * 2 + 1.5,
+        color: `hsl(${Math.random() * 360}, 100%, 65%)`,
+        tilt: Math.random() * 10 - 5,
+        tiltSpeed: Math.random() * 0.1 - 0.05
+      });
+    }
+
+    function drawConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pieces.forEach(p => {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.tilt);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 1.4);
+        ctx.restore();
+      });
+      updateConfetti();
+      requestAnimationFrame(drawConfetti);
+    }
+
+    function updateConfetti() {
+      pieces.forEach(p => {
+        p.y += p.speed;
+        p.tilt += p.tiltSpeed;
+        if (p.y > canvas.height + 20) {
+          p.y = -20;
+          p.x = Math.random() * canvas.width;
+        }
+      });
+    }
+
+    drawConfetti();
+
+    // ========= ローディング → イントロ表示（メッセージ演出付き） =========
+    const loading = document.getElementById("loading");
+    const loadingText = document.getElementById("loading-text");
+    const intro = document.getElementById("intro");
+
+    const loadingMessages = [
+      "ひなのの笑顔データを読み込み中…",
+      "これまでの思い出フォルダを整理中…",
+      "ドキドキ度を120％までチャージ中…",
+      "サプライズの最終チェック中…"
+    ];
+    let msgIndex = 0;
+
+    const msgInterval = setInterval(() => {
+      loadingText.textContent = loadingMessages[msgIndex];
+      msgIndex = (msgIndex + 1) % loadingMessages.length;
+    }, 1000);
+
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        intro.classList.add("hold-show");
+
+        setTimeout(() => {
+          loading.style.opacity = "0";
+          setTimeout(() => {
+            loading.style.display = "none";
+            clearInterval(msgInterval);
+          }, 500);
+        }, 400);
+      }, 3200);
+    });
+
+    // ========= イントロタップで本編＋BGMスタート =========
+    intro.addEventListener("click", async () => {
+      // 最初の1回だけBGMスタート
+      if (!bgmStarted && AudioContextClass) {
+        ensureAudioContext();
+        if (audioCtx.state === "suspended") {
+          await audioCtx.resume();
+        }
+        bgmStarted = true;
+        bgmMuted = false;
+        if (masterGain) masterGain.gain.value = 0.25;
+        musicToggle.textContent = "🔊";
+        playHappyBirthdayLoop();
+      }
+
+      intro.style.opacity = "0";
+      intro.style.pointerEvents = "none";
+      setTimeout(() => {
+        intro.style.display = "none";
+      }, 600);
+
+      // タップした瞬間，紙吹雪が一瞬だけ勢い増す
+      pieces.forEach(p => {
+        p.y -= 30;
+        p.speed += 0.8;
+      });
+    });
+
+    // ========= 音楽オン／オフボタン =========
+    const musicToggle = document.getElementById("musicToggle");
+
+    musicToggle.addEventListener("click", async () => {
+      if (!AudioContextClass) return;
+
+      ensureAudioContext();
+
+      if (audioCtx.state === "suspended") {
+        await audioCtx.resume();
+      }
+
+      // まだ再生が始まってなければ，ここでスタートしてもOK
+      if (!bgmStarted) {
+        bgmStarted = true;
+        playHappyBirthdayLoop();
+      }
+
+      bgmMuted = !bgmMuted;
+
+      if (masterGain) {
+        masterGain.gain.value = bgmMuted ? 0 : 0.25;
+      }
+
+      musicToggle.textContent = bgmMuted ? "🔇" : "🔊";
+    });
+  </script>
 </body>
 </html>
